@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
 import AdminLayout from "@/components/admin/AdminLayout";
@@ -11,11 +11,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Edit2, Trash2, MapPin, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
-import { Place, Category, categories, getPlaces, savePlaces, addPlace, deletePlace, updatePlace } from "@/data/places";
+import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
+import { Place, Category, categories, getPlaces, addPlace, deletePlace, updatePlace } from "@/data/places";
 
 const mapContainerStyle = { width: "100%", height: "500px" };
 const center = { lat: 41.9028, lng: 12.4964 };
+const DEMO_KEY = "AIzaSyDEMO_KEY_REPLACE_ME_12345";
+const STORED_API_KEY = localStorage.getItem("google_maps_key") || DEMO_KEY;
 
 const AdminMapEditor = () => {
   const { isAuthenticated } = useAdmin();
@@ -26,15 +28,15 @@ const AdminMapEditor = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPlace, setEditingPlace] = useState<Place | null>(null);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const [apiKey, setApiKey] = useState("");
+  const [inputKey, setInputKey] = useState("");
+  const [mapLoaded, setMapLoaded] = useState(false);
   const [formData, setFormData] = useState<Partial<Place>>({
     name: "", category: "monumenti", lat: 41.9028, lng: 12.4964, description: "", address: "", image: ""
   });
 
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: apiKey
-  });
+  const onMapLoad = useCallback(() => {
+    setMapLoaded(true);
+  }, []);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -42,14 +44,14 @@ const AdminMapEditor = () => {
       return;
     }
     setPlaces(getPlaces());
-    const storedKey = localStorage.getItem("google_maps_key");
-    if (storedKey) setApiKey(storedKey);
   }, [isAuthenticated, navigate]);
 
   const handleApiKeySubmit = () => {
-    localStorage.setItem("google_maps_key", apiKey);
-    toast({ title: "API Key salvata" });
-    window.location.reload();
+    if (inputKey) {
+      localStorage.setItem("google_maps_key", inputKey);
+      toast({ title: "API Key salvata" });
+      window.location.reload();
+    }
   };
 
   const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
@@ -162,18 +164,7 @@ const AdminMapEditor = () => {
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">Clicca sulla mappa per selezionare le coordinate</p>
-                {isLoaded && (
-                  <div className="h-64 rounded-lg overflow-hidden border border-border">
-                    <GoogleMap
-                      mapContainerStyle={{ width: "100%", height: "100%" }}
-                      center={{ lat: formData.lat || 41.9028, lng: formData.lng || 12.4964 }}
-                      zoom={14}
-                      onClick={handleMapClick}
-                    >
-                      <Marker position={{ lat: formData.lat || 41.9028, lng: formData.lng || 12.4964 }} />
-                    </GoogleMap>
-                  </div>
-                )}
+                <p className="text-xs text-muted-foreground italic">La mini-mappa è disponibile nella vista principale</p>
                 <Button onClick={handleSubmit} className="w-full bg-gradient-roma text-white">
                   {editingPlace ? "Salva Modifiche" : "Aggiungi Luogo"}
                 </Button>
@@ -182,61 +173,58 @@ const AdminMapEditor = () => {
           </Dialog>
         </div>
 
-        {!apiKey || !isLoaded ? (
-          <Card className="border-border">
-            <CardContent className="p-8 text-center">
-              <MapPin className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="font-display text-xl mb-2">Configura Google Maps API</h3>
-              <p className="text-muted-foreground mb-4">Inserisci la tua API Key di Google Maps</p>
-              <div className="flex gap-2 max-w-md mx-auto">
-                <Input value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="AIzaSy..." />
-                <Button onClick={handleApiKeySubmit} className="bg-gradient-roma text-white">Salva</Button>
-              </div>
-              <p className="text-xs text-muted-foreground mt-4">
-                Ottieni la key su <a href="https://console.cloud.google.com/apis/credentials" target="_blank" className="text-primary underline">Google Cloud Console</a>
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <>
-            <div className="rounded-xl overflow-hidden border-4 border-roma-gold/30 shadow-xl">
-              <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                center={center}
-                zoom={12}
-              >
-                {places.map(place => (
-                  <Marker
-                    key={place.id}
-                    position={{ lat: place.lat, lng: place.lng }}
-                    onClick={() => setSelectedPlace(place)}
-                    icon={{
-                      path: google.maps.SymbolPath.CIRCLE,
-                      fillColor: getCategoryColor(place.category),
-                      fillOpacity: 1,
-                      strokeColor: "#FFD700",
-                      strokeWeight: 2,
-                      scale: 10
-                    }}
-                  />
-                ))}
-                {selectedPlace && (
-                  <InfoWindow
-                    position={{ lat: selectedPlace.lat, lng: selectedPlace.lng }}
-                    onCloseClick={() => setSelectedPlace(null)}
-                  >
-                    <div className="p-2 max-w-xs">
-                      {selectedPlace.image && (
-                        <img src={selectedPlace.image} alt={selectedPlace.name} className="w-full h-24 object-cover rounded mb-2" />
-                      )}
-                      <h3 className="font-bold text-gray-900">{selectedPlace.name}</h3>
-                      <p className="text-sm text-gray-600">{selectedPlace.description}</p>
-                      <p className="text-xs text-gray-500 mt-1">📍 {selectedPlace.address}</p>
-                    </div>
-                  </InfoWindow>
-                )}
-              </GoogleMap>
+        <Card className="border-border mb-6">
+          <CardContent className="p-4">
+            <div className="flex gap-2 items-center">
+              <MapPin className="h-5 w-5 text-primary" />
+              <span className="text-sm text-muted-foreground">Aggiorna API Key:</span>
+              <Input value={inputKey} onChange={e => setInputKey(e.target.value)} placeholder="AIzaSy..." className="max-w-xs" />
+              <Button onClick={handleApiKeySubmit} size="sm" variant="outline">Salva</Button>
             </div>
+          </CardContent>
+        </Card>
+
+        <LoadScript googleMapsApiKey={STORED_API_KEY}>
+          <div className="rounded-xl overflow-hidden border-4 border-roma-gold/30 shadow-xl">
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              center={center}
+              zoom={12}
+              onLoad={onMapLoad}
+            >
+              {mapLoaded && places.map(place => (
+                <Marker
+                  key={place.id}
+                  position={{ lat: place.lat, lng: place.lng }}
+                  onClick={() => setSelectedPlace(place)}
+                  icon={{
+                    path: window.google?.maps?.SymbolPath?.CIRCLE || 0,
+                    fillColor: getCategoryColor(place.category),
+                    fillOpacity: 1,
+                    strokeColor: "#FFD700",
+                    strokeWeight: 2,
+                    scale: 10
+                  }}
+                />
+              ))}
+              {selectedPlace && (
+                <InfoWindow
+                  position={{ lat: selectedPlace.lat, lng: selectedPlace.lng }}
+                  onCloseClick={() => setSelectedPlace(null)}
+                >
+                  <div className="p-2 max-w-xs">
+                    {selectedPlace.image && (
+                      <img src={selectedPlace.image} alt={selectedPlace.name} className="w-full h-24 object-cover rounded mb-2" />
+                    )}
+                    <h3 className="font-bold text-gray-900">{selectedPlace.name}</h3>
+                    <p className="text-sm text-gray-600">{selectedPlace.description}</p>
+                    <p className="text-xs text-gray-500 mt-1">📍 {selectedPlace.address}</p>
+                  </div>
+                </InfoWindow>
+              )}
+            </GoogleMap>
+          </div>
+        </LoadScript>
 
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -274,8 +262,6 @@ const AdminMapEditor = () => {
                 </Card>
               ))}
             </div>
-          </>
-        )}
       </div>
     </AdminLayout>
   );
