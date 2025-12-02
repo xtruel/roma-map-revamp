@@ -53,7 +53,7 @@ const Header = () => {
             <Button variant="ghost" size="icon" className="hidden md:flex">
               <Search className="h-5 w-5" />
             </Button>
-            <Button className="hidden md:flex bg-gradient-roma text-primary-foreground hover:opacity-90">
+            <Button className="hidden md:flex bg-gradient-roma text-white font-semibold hover:opacity-90">
               Accedi
             </Button>
             <Button
@@ -85,7 +85,7 @@ const Header = () => {
                   {link.label}
                 </Link>
               ))}
-              <Button className="mt-4 bg-gradient-roma text-primary-foreground">
+              <Button className="mt-4 bg-gradient-roma text-white font-semibold">
                 Accedi
               </Button>
             </div>
