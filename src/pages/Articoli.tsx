@@ -170,12 +170,12 @@ const Articoli = () => {
                     alt={article.title}
                     className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-roma-maroon via-roma-maroon/50 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-roma-rosso via-roma-rosso/50 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <span className="inline-block bg-roma-gold text-roma-maroon px-3 py-1 rounded-full text-xs font-semibold mb-3">
+                    <span className="inline-block bg-roma-giallo text-roma-rosso px-3 py-1 rounded-full text-xs font-semibold mb-3">
                       {article.category}
                     </span>
-                    <h3 className="font-display text-3xl text-white mb-2 group-hover:text-roma-gold transition-colors">
+                    <h3 className="font-display text-3xl text-white mb-2 group-hover:text-roma-giallo transition-colors">
                       {article.title}
                     </h3>
                     <p className="text-white/80 mb-4 line-clamp-2">{article.excerpt}</p>

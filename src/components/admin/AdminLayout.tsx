@@ -38,7 +38,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         <div className="p-6">
           <Link to="/" className="flex items-center gap-2">
             <span className="font-display text-2xl text-primary">Roma</span>
-            <span className="font-display text-2xl text-roma-gold">Admin</span>
+            <span className="font-display text-2xl text-roma-giallo">Admin</span>
           </Link>
         </div>
 
