@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Stats from "@/components/Stats";
-import MapSection from "@/components/MapSection";
+import GoogleMapSection from "@/components/GoogleMapSection";
 import Articles from "@/components/Articles";
 import Packages from "@/components/Packages";
 import Footer from "@/components/Footer";
@@ -12,7 +12,7 @@ const Index = () => {
       <Header />
       <Hero />
       <Stats />
-      <MapSection />
+      <GoogleMapSection />
       <Articles />
       <Packages />
       <Footer />
