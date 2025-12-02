@@ -13,11 +13,25 @@ const mapStyles = [
   { featureType: "transit", stylers: [{ visibility: "off" }] },
 ];
 
+// Initialize API key synchronously to avoid loader conflicts
+const getInitialApiKey = () => {
+  if (typeof window !== "undefined") {
+    const storedKey = localStorage.getItem("google_maps_key");
+    const demoKey = "AIzaSyDEMO_KEY_REPLACE_ME_12345";
+    if (!storedKey) {
+      localStorage.setItem("google_maps_key", demoKey);
+      return demoKey;
+    }
+    return storedKey;
+  }
+  return "AIzaSyDEMO_KEY_REPLACE_ME_12345";
+};
+
 const GoogleMapSection = () => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey] = useState(getInitialApiKey);
   const [inputKey, setInputKey] = useState("");
 
   const { isLoaded } = useJsApiLoader({
@@ -27,18 +41,12 @@ const GoogleMapSection = () => {
 
   useEffect(() => {
     setPlaces(getPlaces());
-    const storedKey = localStorage.getItem("google_maps_key");
-    // Use stored key or demo key (replace with your real key)
-    const demoKey = "AIzaSyDEMO_KEY_REPLACE_ME_12345";
-    setApiKey(storedKey || demoKey);
-    if (!storedKey) {
-      localStorage.setItem("google_maps_key", demoKey);
-    }
   }, []);
 
   const handleApiKeySubmit = () => {
     localStorage.setItem("google_maps_key", inputKey);
-    setApiKey(inputKey);
+    // Reload to apply new API key (loader limitation)
+    window.location.reload();
   };
 
   const filteredPlaces = activeCategory
