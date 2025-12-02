@@ -108,12 +108,16 @@ const Articoli = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-12 bg-gradient-roma">
-        <div className="container mx-auto px-4">
-          <h1 className="font-display text-5xl md:text-7xl text-white text-center mb-4">
+      <section className="pt-24 pb-12 bg-gradient-roma relative overflow-hidden">
+        <div className="absolute inset-0 opacity-25">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1920')] bg-cover bg-center" />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/60" />
+        <div className="container mx-auto px-4 relative z-10">
+          <h1 className="font-display text-5xl md:text-7xl text-white text-center mb-4 drop-shadow-lg">
             Articoli
           </h1>
-          <p className="text-white/80 text-center text-lg max-w-2xl mx-auto">
+          <p className="text-white/90 text-center text-lg max-w-2xl mx-auto drop-shadow">
             Tutte le notizie, le storie e gli approfondimenti dal mondo giallorosso
           </p>
         </div>

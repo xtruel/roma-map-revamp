@@ -88,14 +88,15 @@ const Eventi = () => {
       
       {/* Hero */}
       <section className="pt-24 pb-16 bg-gradient-roma relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-30">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1920')] bg-cover bg-center" />
         </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/80" />
         <div className="container mx-auto px-4 relative z-10">
-          <h1 className="font-display text-5xl md:text-7xl text-white text-center mb-4">
+          <h1 className="font-display text-5xl md:text-7xl text-white text-center mb-4 drop-shadow-lg">
             Eventi & Partite
           </h1>
-          <p className="text-white/80 text-center text-lg max-w-2xl mx-auto">
+          <p className="text-white/90 text-center text-lg max-w-2xl mx-auto drop-shadow">
             Non perdere nessun appuntamento giallorosso. Partite, tour, incontri e molto altro.
           </p>
         </div>
