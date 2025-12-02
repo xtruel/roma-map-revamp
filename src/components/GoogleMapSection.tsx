@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -29,9 +29,14 @@ const GoogleMapSection = () => {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [inputKey, setInputKey] = useState("");
   const [showKeyInput, setShowKeyInput] = useState(false);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
     setPlaces(getPlaces());
+  }, []);
+
+  const onMapLoad = useCallback(() => {
+    setMapLoaded(true);
   }, []);
 
   const handleApiKeySubmit = () => {
@@ -121,14 +126,15 @@ const GoogleMapSection = () => {
                 center={center}
                 zoom={12}
                 options={{ styles: mapStyles, disableDefaultUI: false, zoomControl: true }}
+                onLoad={onMapLoad}
               >
-                {filteredPlaces.map((place) => (
+                {mapLoaded && filteredPlaces.map((place) => (
                   <Marker
                     key={place.id}
                     position={{ lat: place.lat, lng: place.lng }}
                     onClick={() => setSelectedPlace(place)}
                     icon={{
-                      path: google.maps.SymbolPath.CIRCLE,
+                      path: window.google?.maps?.SymbolPath?.CIRCLE || 0,
                       fillColor: getCategoryColor(place.category),
                       fillOpacity: 1,
                       strokeColor: "#FFD700",
