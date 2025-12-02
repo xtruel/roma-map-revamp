@@ -12,8 +12,8 @@ export interface Place {
 }
 
 export const categories: { id: Category; label: string; color: string }[] = [
-  { id: "monumenti", label: "Monumenti", color: "#8B0000" },
-  { id: "stadi", label: "Stadi", color: "#FFD700" },
+  { id: "monumenti", label: "Monumenti", color: "#8E001C" },
+  { id: "stadi", label: "Stadi", color: "#FFB300" },
   { id: "locali", label: "Locali", color: "#FF6B35" },
   { id: "ristoranti", label: "Ristoranti", color: "#CD853F" },
   { id: "musei", label: "Musei", color: "#4169E1" },

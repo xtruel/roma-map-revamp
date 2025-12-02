@@ -118,33 +118,33 @@ const Eventi = () => {
                   alt={event.title}
                   className="w-full h-96 object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-roma-maroon via-roma-maroon/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-roma-rosso via-roma-rosso/60 to-transparent" />
                 <div className="absolute top-4 right-4">
-                  <span className="bg-roma-gold text-roma-maroon px-3 py-1 rounded-full text-sm font-bold">
+                  <span className="bg-roma-giallo text-roma-rosso px-3 py-1 rounded-full text-sm font-bold">
                     {event.type}
                   </span>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="font-display text-2xl text-white mb-3 group-hover:text-roma-gold transition-colors">
+                  <h3 className="font-display text-2xl text-white mb-3 group-hover:text-roma-giallo transition-colors">
                     {event.title}
                   </h3>
                   <div className="flex flex-col gap-2 text-white/80 text-sm mb-4">
                     <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-roma-gold" />
+                      <Calendar className="h-4 w-4 text-roma-giallo" />
                       {event.date}
                     </div>
                     <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-roma-gold" />
+                      <Clock className="h-4 w-4 text-roma-giallo" />
                       {event.time}
                     </div>
                     <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-roma-gold" />
+                      <MapPin className="h-4 w-4 text-roma-giallo" />
                       {event.location}
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-roma-gold font-bold text-lg">{event.price}</span>
-                    <Button className="bg-roma-gold text-roma-maroon hover:bg-roma-gold-light">
+                    <span className="text-roma-giallo font-bold text-lg">{event.price}</span>
+                    <Button className="bg-roma-giallo text-roma-rosso hover:opacity-90 font-semibold">
                       <Ticket className="h-4 w-4 mr-2" />
                       Acquista
                     </Button>

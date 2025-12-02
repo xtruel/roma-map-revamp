@@ -4,6 +4,9 @@
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
+Official AS Roma colors:
+- Rosso Roma: RGB(142, 0, 28) = HSL(348, 100%, 28%)
+- Giallo Roma: RGB(255, 179, 0) = HSL(42, 100%, 50%)
 */
 
 @layer base {
@@ -17,9 +20,9 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    /* Roma Maroon - Primary brand color */
-    --primary: 0 100% 27%;
-    --primary-foreground: 48 100% 50%;
+    /* Roma Rosso - Primary brand color */
+    --primary: 348 100% 28%;
+    --primary-foreground: 42 100% 50%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -27,23 +30,22 @@ All colors MUST be HSL.
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Roma Gold - Accent color */
-    --accent: 48 100% 50%;
-    --accent-foreground: 0 100% 27%;
+    /* Roma Giallo - Accent color */
+    --accent: 42 100% 50%;
+    --accent-foreground: 348 100% 28%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 0 100% 27%;
+    --ring: 348 100% 28%;
 
     --radius: 0.5rem;
     
     /* Roma specific colors */
-    --roma-maroon: 0 100% 27%;
-    --roma-gold: 48 100% 50%;
-    --roma-gold-light: 48 100% 60%;
+    --roma-rosso: 348 100% 28%;
+    --roma-giallo: 42 100% 50%;
 
     --sidebar-background: 0 0% 98%;
 
@@ -112,31 +114,70 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+  /* Gradiente diviso a metà: Rosso | Giallo */
   .bg-gradient-roma {
-    background: linear-gradient(135deg, hsl(0 100% 27%) 0%, hsl(0 100% 35%) 50%, hsl(48 100% 45%) 100%);
+    background: linear-gradient(90deg, hsl(348 100% 28%) 50%, hsl(42 100% 50%) 50%);
   }
   
+  /* Gradiente sfumato per sfumature morbide */
+  .bg-gradient-roma-blend {
+    background: linear-gradient(135deg, hsl(348 100% 28%) 0%, hsl(348 100% 35%) 50%, hsl(42 100% 50%) 100%);
+  }
+  
+  /* Colori ufficiali Roma */
+  .text-roma-rosso,
   .text-roma-maroon {
-    color: hsl(0 100% 27%);
+    color: hsl(348 100% 28%);
   }
   
+  .text-roma-giallo,
   .text-roma-gold {
-    color: hsl(48 100% 50%);
+    color: hsl(42 100% 50%);
   }
   
-  .bg-roma-maroon {
-    background-color: hsl(0 100% 27%);
+  .bg-roma-rosso,
+  .bg-roma-maroon,
+  .bg-roma-red {
+    background-color: hsl(348 100% 28%);
   }
   
+  .bg-roma-giallo,
   .bg-roma-gold {
-    background-color: hsl(48 100% 50%);
+    background-color: hsl(42 100% 50%);
   }
   
   .bg-roma-gold-light {
-    background-color: hsl(48 100% 60%);
+    background-color: hsl(42 100% 55%);
   }
   
+  .border-roma-giallo,
   .border-roma-gold {
-    border-color: hsl(48 100% 50%);
+    border-color: hsl(42 100% 50%);
+  }
+  
+  .border-roma-rosso,
+  .border-roma-maroon {
+    border-color: hsl(348 100% 28%);
+  }
+  
+  .ring-roma-gold {
+    --tw-ring-color: hsl(42 100% 50%);
+  }
+  
+  .shadow-gold {
+    box-shadow: 0 10px 30px -10px hsl(42 100% 50% / 0.4);
+  }
+  
+  .animate-pulse-gold {
+    animation: pulse-gold 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse-gold {
+    0%, 100% {
+      box-shadow: 0 0 0 0 hsl(42 100% 50% / 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 8px hsl(42 100% 50% / 0);
+    }
   }
 }
