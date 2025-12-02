@@ -8,8 +8,9 @@ import { Shield, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // Pre-filled demo credentials
+  const [email, setEmail] = useState("admin@ovunqueromanisti.it");
+  const [password, setPassword] = useState("roma1927");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAdmin();

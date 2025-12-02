@@ -28,7 +28,12 @@ const GoogleMapSection = () => {
   useEffect(() => {
     setPlaces(getPlaces());
     const storedKey = localStorage.getItem("google_maps_key");
-    if (storedKey) setApiKey(storedKey);
+    // Use stored key or demo key (replace with your real key)
+    const demoKey = "AIzaSyDEMO_KEY_REPLACE_ME_12345";
+    setApiKey(storedKey || demoKey);
+    if (!storedKey) {
+      localStorage.setItem("google_maps_key", demoKey);
+    }
   }, []);
 
   const handleApiKeySubmit = () => {
