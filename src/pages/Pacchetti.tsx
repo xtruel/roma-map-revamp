@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Check, Star, Ticket, MapPin, Users, Plane, Hotel, Camera, Gift } from "lucide-react";
+import { Check, Star, Ticket, MapPin, Users, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ticketPackages = [
@@ -215,13 +216,16 @@ const Pacchetti = () => {
                 </ul>
                 
                 <Button
+                  asChild
                   className={`w-full ${
                     pkg.popular
                       ? "bg-roma-gold text-roma-maroon hover:bg-roma-gold-light"
                       : "bg-gradient-roma text-white hover:opacity-90"
                   }`}
                 >
-                  Acquista
+                  <Link to={`/checkout?package=${pkg.name.toLowerCase().replace(/\s+/g, "-")}&qty=1&price=${pkg.price}`}>
+                    Acquista
+                  </Link>
                 </Button>
               </div>
             ))}
@@ -278,8 +282,10 @@ const Pacchetti = () => {
                       <span className="text-sm text-muted-foreground">A partire da</span>
                       <div className="font-display text-3xl text-primary">€{pkg.price}</div>
                     </div>
-                    <Button className="bg-gradient-roma text-white">
-                      Prenota
+                    <Button asChild className="bg-gradient-roma text-white">
+                      <Link to={`/checkout?package=${pkg.name.toLowerCase().replace(/\s+/g, "-")}&qty=1&price=${pkg.price}`}>
+                        Prenota
+                      </Link>
                     </Button>
                   </div>
                 </div>
@@ -332,8 +338,10 @@ const Pacchetti = () => {
                 
                 <div className="flex items-center justify-between pt-4 border-t border-border">
                   <span className="font-display text-2xl text-primary">€{tour.price}</span>
-                  <Button variant="outline" className="hover:bg-primary hover:text-primary-foreground">
-                    Dettagli
+                  <Button asChild variant="outline" className="hover:bg-primary hover:text-primary-foreground">
+                    <Link to={`/checkout?package=${tour.name.toLowerCase().replace(/\s+/g, "-")}&qty=1&price=${tour.price}`}>
+                      Acquista
+                    </Link>
                   </Button>
                 </div>
               </div>

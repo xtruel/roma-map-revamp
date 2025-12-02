@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AdminProvider } from "@/contexts/AdminContext";
 import Index from "./pages/Index";
 import Articoli from "./pages/Articoli";
 import Eventi from "./pages/Eventi";
@@ -14,31 +15,46 @@ import Trofei from "./pages/Trofei";
 import ChiSiamo from "./pages/ChiSiamo";
 import Contatti from "./pages/Contatti";
 import NotFound from "./pages/NotFound";
+import Checkout from "./pages/Checkout";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminArticles from "./pages/admin/AdminArticles";
+import AdminMapEditor from "./pages/admin/AdminMapEditor";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminOrders from "./pages/admin/AdminOrders";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/articoli" element={<Articoli />} />
-          <Route path="/eventi" element={<Eventi />} />
-          <Route path="/partite" element={<Partite />} />
-          <Route path="/pacchetti" element={<Pacchetti />} />
-          <Route path="/mappa" element={<Mappa />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/trofei" element={<Trofei />} />
-          <Route path="/chi-siamo" element={<ChiSiamo />} />
-          <Route path="/contatti" element={<Contatti />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AdminProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/articoli" element={<Articoli />} />
+            <Route path="/eventi" element={<Eventi />} />
+            <Route path="/partite" element={<Partite />} />
+            <Route path="/pacchetti" element={<Pacchetti />} />
+            <Route path="/mappa" element={<Mappa />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/trofei" element={<Trofei />} />
+            <Route path="/chi-siamo" element={<ChiSiamo />} />
+            <Route path="/contatti" element={<Contatti />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/articoli" element={<AdminArticles />} />
+            <Route path="/admin/mappa" element={<AdminMapEditor />} />
+            <Route path="/admin/ordini" element={<AdminOrders />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AdminProvider>
   </QueryClientProvider>
 );
 

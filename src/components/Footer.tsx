@@ -1,6 +1,22 @@
-import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin, Shield } from "lucide-react";
 
 const Footer = () => {
+  const links = [
+    { label: "Home", href: "/" },
+    { label: "Articoli", href: "/articoli" },
+    { label: "Eventi", href: "/eventi" },
+    { label: "Mappa", href: "/mappa" },
+    { label: "Pacchetti", href: "/pacchetti" },
+    { label: "Community", href: "/community" },
+  ];
+
+  const supportLinks = [
+    { label: "FAQ", href: "/contatti" },
+    { label: "Chi Siamo", href: "/chi-siamo" },
+    { label: "Contattaci", href: "/contatti" },
+  ];
+
   return (
     <footer className="bg-roma-maroon text-white">
       <div className="container mx-auto px-4 py-16">
@@ -33,11 +49,11 @@ const Footer = () => {
           <div>
             <h4 className="font-display text-xl text-roma-gold mb-4">Link Utili</h4>
             <ul className="space-y-3">
-              {["Home", "Articoli", "Eventi", "Mappa", "Pacchetti", "Community"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-white/70 hover:text-roma-gold transition-colors">
-                    {link}
-                  </a>
+              {links.map((link) => (
+                <li key={link.label}>
+                  <Link to={link.href} className="text-white/70 hover:text-roma-gold transition-colors">
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -47,11 +63,11 @@ const Footer = () => {
           <div>
             <h4 className="font-display text-xl text-roma-gold mb-4">Supporto</h4>
             <ul className="space-y-3">
-              {["FAQ", "Termini e Condizioni", "Privacy Policy", "Cookie Policy", "Contattaci"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-white/70 hover:text-roma-gold transition-colors">
-                    {link}
-                  </a>
+              {supportLinks.map((link) => (
+                <li key={link.label}>
+                  <Link to={link.href} className="text-white/70 hover:text-roma-gold transition-colors">
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -77,10 +93,17 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-white/20 mt-12 pt-8 text-center">
+        <div className="border-t border-white/20 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-white/50 text-sm">
             © 2024 Ovunque Romanisti. Tutti i diritti riservati. Daje Roma!
           </p>
+          <Link 
+            to="/admin/login" 
+            className="flex items-center gap-2 text-white/30 hover:text-roma-gold transition-colors text-sm"
+          >
+            <Shield className="h-4 w-4" />
+            Admin
+          </Link>
         </div>
       </div>
     </footer>
