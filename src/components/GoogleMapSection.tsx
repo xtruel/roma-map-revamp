@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
+import { useState, useEffect } from "react";
+import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { MapPin, Star } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { Place, Category, categories, getPlaces } from "@/data/places";
 
 const mapContainerStyle = { width: "100%", height: "600px" };
@@ -13,40 +13,32 @@ const mapStyles = [
   { featureType: "transit", stylers: [{ visibility: "off" }] },
 ];
 
-// Initialize API key synchronously to avoid loader conflicts
-const getInitialApiKey = () => {
-  if (typeof window !== "undefined") {
-    const storedKey = localStorage.getItem("google_maps_key");
-    const demoKey = "AIzaSyDEMO_KEY_REPLACE_ME_12345";
-    if (!storedKey) {
-      localStorage.setItem("google_maps_key", demoKey);
-      return demoKey;
-    }
-    return storedKey;
-  }
-  return "AIzaSyDEMO_KEY_REPLACE_ME_12345";
-};
+// Get API key once at module load time
+const STORED_API_KEY = typeof window !== "undefined" 
+  ? localStorage.getItem("google_maps_key") || "AIzaSyDEMO_KEY_REPLACE_ME_12345"
+  : "AIzaSyDEMO_KEY_REPLACE_ME_12345";
+
+// Set demo key if not present
+if (typeof window !== "undefined" && !localStorage.getItem("google_maps_key")) {
+  localStorage.setItem("google_maps_key", STORED_API_KEY);
+}
 
 const GoogleMapSection = () => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const [apiKey] = useState(getInitialApiKey);
   const [inputKey, setInputKey] = useState("");
-
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: apiKey
-  });
+  const [showKeyInput, setShowKeyInput] = useState(false);
 
   useEffect(() => {
     setPlaces(getPlaces());
   }, []);
 
   const handleApiKeySubmit = () => {
-    localStorage.setItem("google_maps_key", inputKey);
-    // Reload to apply new API key (loader limitation)
-    window.location.reload();
+    if (inputKey.trim()) {
+      localStorage.setItem("google_maps_key", inputKey.trim());
+      window.location.reload();
+    }
   };
 
   const filteredPlaces = activeCategory
@@ -97,13 +89,13 @@ const GoogleMapSection = () => {
 
         {/* Map */}
         <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-roma-gold/30">
-          {!apiKey || !isLoaded ? (
+          {showKeyInput ? (
             <div className="h-[600px] bg-card flex items-center justify-center">
               <div className="text-center max-w-md p-8">
                 <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
                 <h3 className="font-display text-2xl mb-4">Configura Google Maps</h3>
                 <p className="text-muted-foreground mb-6">
-                  Inserisci la tua Google Maps API Key per visualizzare la mappa interattiva con {places.length} luoghi.
+                  Inserisci la tua Google Maps API Key per visualizzare la mappa interattiva.
                 </p>
                 <Input
                   placeholder="AIzaSy..."
@@ -123,55 +115,67 @@ const GoogleMapSection = () => {
               </div>
             </div>
           ) : (
-            <GoogleMap
-              mapContainerStyle={mapContainerStyle}
-              center={center}
-              zoom={12}
-              options={{ styles: mapStyles, disableDefaultUI: false, zoomControl: true }}
-            >
-              {filteredPlaces.map((place) => (
-                <Marker
-                  key={place.id}
-                  position={{ lat: place.lat, lng: place.lng }}
-                  onClick={() => setSelectedPlace(place)}
-                  icon={{
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: getCategoryColor(place.category),
-                    fillOpacity: 1,
-                    strokeColor: "#FFD700",
-                    strokeWeight: 3,
-                    scale: 12
-                  }}
-                />
-              ))}
+            <LoadScript googleMapsApiKey={STORED_API_KEY}>
+              <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={center}
+                zoom={12}
+                options={{ styles: mapStyles, disableDefaultUI: false, zoomControl: true }}
+              >
+                {filteredPlaces.map((place) => (
+                  <Marker
+                    key={place.id}
+                    position={{ lat: place.lat, lng: place.lng }}
+                    onClick={() => setSelectedPlace(place)}
+                    icon={{
+                      path: google.maps.SymbolPath.CIRCLE,
+                      fillColor: getCategoryColor(place.category),
+                      fillOpacity: 1,
+                      strokeColor: "#FFD700",
+                      strokeWeight: 3,
+                      scale: 12
+                    }}
+                  />
+                ))}
 
-              {selectedPlace && (
-                <InfoWindow
-                  position={{ lat: selectedPlace.lat, lng: selectedPlace.lng }}
-                  onCloseClick={() => setSelectedPlace(null)}
-                >
-                  <div className="max-w-xs">
-                    {selectedPlace.image && (
-                      <img 
-                        src={selectedPlace.image} 
-                        alt={selectedPlace.name}
-                        className="w-full h-32 object-cover rounded-lg mb-3"
-                      />
-                    )}
-                    <h3 className="font-bold text-lg text-gray-900 mb-1">{selectedPlace.name}</h3>
-                    <span 
-                      className="inline-block text-xs px-2 py-0.5 rounded text-white mb-2"
-                      style={{ backgroundColor: getCategoryColor(selectedPlace.category) }}
-                    >
-                      {categories.find(c => c.id === selectedPlace.category)?.label}
-                    </span>
-                    <p className="text-sm text-gray-600 mb-2">{selectedPlace.description}</p>
-                    <p className="text-xs text-gray-500">📍 {selectedPlace.address}</p>
-                  </div>
-                </InfoWindow>
-              )}
-            </GoogleMap>
+                {selectedPlace && (
+                  <InfoWindow
+                    position={{ lat: selectedPlace.lat, lng: selectedPlace.lng }}
+                    onCloseClick={() => setSelectedPlace(null)}
+                  >
+                    <div className="max-w-xs">
+                      {selectedPlace.image && (
+                        <img 
+                          src={selectedPlace.image} 
+                          alt={selectedPlace.name}
+                          className="w-full h-32 object-cover rounded-lg mb-3"
+                        />
+                      )}
+                      <h3 className="font-bold text-lg text-gray-900 mb-1">{selectedPlace.name}</h3>
+                      <span 
+                        className="inline-block text-xs px-2 py-0.5 rounded text-white mb-2"
+                        style={{ backgroundColor: getCategoryColor(selectedPlace.category) }}
+                      >
+                        {categories.find(c => c.id === selectedPlace.category)?.label}
+                      </span>
+                      <p className="text-sm text-gray-600 mb-2">{selectedPlace.description}</p>
+                      <p className="text-xs text-gray-500">📍 {selectedPlace.address}</p>
+                    </div>
+                  </InfoWindow>
+                )}
+              </GoogleMap>
+            </LoadScript>
           )}
+          
+          {/* Change API Key button */}
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setShowKeyInput(true)}
+            className="absolute top-4 right-4 bg-background/90 backdrop-blur"
+          >
+            Cambia API Key
+          </Button>
         </div>
 
         {/* Legend */}
