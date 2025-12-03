@@ -1,7 +1,16 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Search } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, Search, User, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { useUser } from "@/contexts/UserContext";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -19,6 +28,13 @@ const navLinks = [
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useUser();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
@@ -53,9 +69,51 @@ const Header = () => {
             <Button variant="ghost" size="icon" className="hidden md:flex">
               <Search className="h-5 w-5" />
             </Button>
-            <Button className="hidden md:flex bg-gradient-roma text-white font-semibold hover:opacity-90">
-              Accedi
-            </Button>
+            
+            {isAuthenticated && user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10 border-2 border-primary">
+                      <AvatarImage src={user.avatar} alt={user.name} />
+                      <AvatarFallback className="bg-gradient-roma text-white">
+                        {user.name?.charAt(0) || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end">
+                  <div className="flex items-center gap-2 p-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.avatar} alt={user.name} />
+                      <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">{user.name}</span>
+                      <span className="text-xs text-muted-foreground">{user.email}</span>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate("/utente")}>
+                    <User className="mr-2 h-4 w-4" />
+                    Il mio profilo
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Esci
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button 
+                onClick={() => navigate("/utente")}
+                className="hidden md:flex bg-gradient-roma text-white font-semibold hover:opacity-90"
+              >
+                Accedi
+              </Button>
+            )}
+            
             <Button
               variant="ghost"
               size="icon"
@@ -85,9 +143,33 @@ const Header = () => {
                   {link.label}
                 </Link>
               ))}
-              <Button className="mt-4 bg-gradient-roma text-white font-semibold">
-                Accedi
-              </Button>
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to="/utente"
+                    className="px-4 py-3 text-sm font-medium rounded-md transition-colors text-foreground/80 hover:text-primary hover:bg-muted flex items-center gap-2"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <User className="h-4 w-4" />
+                    Il mio profilo
+                  </Link>
+                  <Button 
+                    onClick={() => { handleLogout(); setIsOpen(false); }}
+                    variant="outline" 
+                    className="mt-4 border-destructive text-destructive"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Esci
+                  </Button>
+                </>
+              ) : (
+                <Button 
+                  onClick={() => { navigate("/utente"); setIsOpen(false); }}
+                  className="mt-4 bg-gradient-roma text-white font-semibold"
+                >
+                  Accedi
+                </Button>
+              )}
             </div>
           </nav>
         )}
