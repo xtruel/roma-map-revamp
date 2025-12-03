@@ -23,17 +23,12 @@ interface Article {
   author: string;
   date: string;
   status: "published" | "draft";
+  featured?: boolean;
 }
 
 const ARTICLES_KEY = "roma_articles";
 
-const defaultArticles: Article[] = [
-  { id: "1", title: "La Roma vince il Derby!", excerpt: "Una vittoria storica contro i biancocelesti", content: "Contenuto completo dell'articolo...", category: "Partite", image: "https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=600", author: "Marco Rossi", date: "2024-01-15", status: "published" },
-  { id: "2", title: "Intervista esclusiva al capitano", excerpt: "Le parole del leader giallorosso", content: "Contenuto completo...", category: "Interviste", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=600", author: "Giulia Bianchi", date: "2024-01-14", status: "published" },
-  { id: "3", title: "Calciomercato: nuovi arrivi", excerpt: "I rinforzi per la seconda parte di stagione", content: "Contenuto completo...", category: "Mercato", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600", author: "Luca Verdi", date: "2024-01-13", status: "draft" },
-];
-
-const categories = ["Partite", "Interviste", "Mercato", "Storia", "Community", "Eventi"];
+const categories = ["Partite", "Calciomercato", "Leggende", "Storia", "News", "Interviste", "Guide"];
 
 const AdminArticles = () => {
   const { isAuthenticated } = useAdmin();
@@ -53,7 +48,7 @@ const AdminArticles = () => {
       return;
     }
     const stored = localStorage.getItem(ARTICLES_KEY);
-    setArticles(stored ? JSON.parse(stored) : defaultArticles);
+    setArticles(stored ? JSON.parse(stored) : []);
   }, [isAuthenticated, navigate]);
 
   const saveArticles = (newArticles: Article[]) => {

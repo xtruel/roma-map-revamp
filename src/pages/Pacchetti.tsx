@@ -3,13 +3,16 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import SocialShare from "@/components/SocialShare";
-import { Check, Star, Ticket, MapPin, Users, Bus, Calendar, ArrowRight } from "lucide-react";
+import AdminEditButton from "@/components/AdminEditButton";
+import { Check, Star, Ticket, MapPin, Users, Bus, Calendar, ArrowRight, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePackages, useMatches } from "@/hooks/usePublicData";
+import { useAdmin } from "@/contexts/AdminContext";
 
 const Pacchetti = () => {
   const { ticketPackages, experiencePackages, trasfertaPackages, tourPackages, loading } = usePackages();
   const { upcomingMatches, nextMatch } = useMatches();
+  const { isAuthenticated: isAdmin } = useAdmin();
 
   const typeIcons = {
     biglietto: Ticket,
@@ -41,10 +44,15 @@ const Pacchetti = () => {
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=1920')] bg-cover bg-center" />
         </div>
         <div className="container mx-auto px-4 relative z-10">
-          <h1 className="font-display text-5xl md:text-7xl text-white text-center mb-4">
-            Pacchetti & Biglietti
-          </h1>
-          <p className="text-white/80 text-center text-lg max-w-2xl mx-auto">
+          <div className="flex items-center justify-center gap-4">
+            <h1 className="font-display text-5xl md:text-7xl text-white text-center">
+              Pacchetti & Biglietti
+            </h1>
+            {isAdmin && (
+              <AdminEditButton to="/admin/pacchetti" label="Gestisci Pacchetti" variant="button" />
+            )}
+          </div>
+          <p className="text-white/80 text-center text-lg max-w-2xl mx-auto mt-4">
             Scegli l'esperienza perfetta per vivere la tua passione giallorossa
           </p>
         </div>
