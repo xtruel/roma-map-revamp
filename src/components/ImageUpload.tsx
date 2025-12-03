@@ -1,21 +1,24 @@
 import { useState, useRef } from "react";
-import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Loader2, Cloud, CloudOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useFirebaseStorage } from "@/hooks/useFirebaseStorage";
 
 interface ImageUploadProps {
   value?: string;
   onChange: (url: string) => void;
   className?: string;
   aspectRatio?: "square" | "video" | "wide";
+  folder?: string;
 }
 
-const ImageUpload = ({ value, onChange, className, aspectRatio = "video" }: ImageUploadProps) => {
-  const [isUploading, setIsUploading] = useState(false);
+const ImageUpload = ({ value, onChange, className, aspectRatio = "video", folder = "images" }: ImageUploadProps) => {
   const [urlInput, setUrlInput] = useState("");
   const [showUrlInput, setShowUrlInput] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const { uploadImage, isUploading, isConfigured } = useFirebaseStorage();
 
   const aspectClasses = {
     square: "aspect-square",
@@ -27,36 +30,9 @@ const ImageUpload = ({ value, onChange, className, aspectRatio = "video" }: Imag
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      alert("Per favore seleziona un'immagine valida");
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert("L'immagine non può superare i 5MB");
-      return;
-    }
-
-    setIsUploading(true);
-
-    try {
-      // Convert to base64 for local storage simulation
-      // In production, this would upload to Firebase Storage
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onChange(reader.result as string);
-        setIsUploading(false);
-      };
-      reader.onerror = () => {
-        alert("Errore durante il caricamento dell'immagine");
-        setIsUploading(false);
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error("Upload error:", error);
-      setIsUploading(false);
+    const result = await uploadImage(file, folder);
+    if (result) {
+      onChange(result.url);
     }
   };
 
@@ -96,6 +72,18 @@ const ImageUpload = ({ value, onChange, className, aspectRatio = "video" }: Imag
           >
             <X className="h-4 w-4" />
           </Button>
+          {/* Storage indicator */}
+          <div className="absolute bottom-2 left-2">
+            {isConfigured ? (
+              <span className="flex items-center gap-1 text-xs bg-green-500/80 text-white px-2 py-0.5 rounded">
+                <Cloud className="h-3 w-3" /> Firebase
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 text-xs bg-yellow-500/80 text-white px-2 py-0.5 rounded">
+                <CloudOff className="h-3 w-3" /> Locale
+              </span>
+            )}
+          </div>
         </div>
       ) : (
         <div
@@ -114,7 +102,9 @@ const ImageUpload = ({ value, onChange, className, aspectRatio = "video" }: Imag
             <>
               <ImageIcon className="h-8 w-8 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">Clicca per caricare un'immagine</span>
-              <span className="text-xs text-muted-foreground">oppure trascina qui (max 5MB)</span>
+              <span className="text-xs text-muted-foreground">
+                {isConfigured ? "Firebase Storage (max 5MB)" : "Locale (max 5MB)"}
+              </span>
             </>
           )}
         </div>
