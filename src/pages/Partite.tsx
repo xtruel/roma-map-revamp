@@ -2,14 +2,16 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
-import { Calendar, Clock, MapPin, Tv, Ticket, Bus, ArrowRight } from "lucide-react";
+import AdminEditButton from "@/components/AdminEditButton";
+import { Calendar, Clock, MapPin, Tv, Ticket, Bus, ArrowRight, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMatches, usePackages } from "@/hooks/usePublicData";
+import { useAdmin } from "@/contexts/AdminContext";
 
 const Partite = () => {
   const { upcomingMatches, nextMatch, loading } = useMatches();
   const { trasfertaPackages } = usePackages();
+  const { isAuthenticated: isAdmin } = useAdmin();
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -46,10 +48,15 @@ const Partite = () => {
       {/* Hero */}
       <section className="pt-24 pb-16 bg-gradient-roma">
         <div className="container mx-auto px-4">
-          <h1 className="font-display text-5xl md:text-7xl text-white text-center mb-4">
-            Prossime Partite
-          </h1>
-          <p className="text-white/80 text-center text-lg max-w-2xl mx-auto">
+          <div className="flex items-center justify-center gap-4">
+            <h1 className="font-display text-5xl md:text-7xl text-white text-center">
+              Prossime Partite
+            </h1>
+            {isAdmin && (
+              <AdminEditButton to="/admin/partite" label="Gestisci Partite" variant="button" />
+            )}
+          </div>
+          <p className="text-white/80 text-center text-lg max-w-2xl mx-auto mt-4">
             Segui tutti gli impegni della Roma in Serie A, Europa League e Coppa Italia
           </p>
         </div>

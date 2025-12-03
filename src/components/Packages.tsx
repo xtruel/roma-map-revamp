@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
-import { Check, Star, Ticket, MapPin, Users, Bus, ArrowRight } from "lucide-react";
+import { Check, Star, Ticket, MapPin, Users, Bus, ArrowRight, Settings } from "lucide-react";
 import { Button } from "./ui/button";
 import { usePackages, useMatches } from "@/hooks/usePublicData";
+import { useAdmin } from "@/contexts/AdminContext";
+import AdminEditButton from "./AdminEditButton";
 
 const Packages = () => {
   const { activePackages, loading } = usePackages();
   const { nextMatch } = useMatches();
+  const { isAuthenticated: isAdmin } = useAdmin();
 
   // Show 4 featured packages
   const featuredPackages = activePackages
@@ -33,9 +36,14 @@ const Packages = () => {
     <section id="pacchetti" className="py-20 bg-gradient-roma">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="font-display text-5xl md:text-6xl text-white mb-4">
-            Pacchetti & Biglietti
-          </h2>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <h2 className="font-display text-5xl md:text-6xl text-white">
+              Pacchetti & Biglietti
+            </h2>
+            {isAdmin && (
+              <AdminEditButton to="/admin/pacchetti" label="Gestisci" variant="button" className="bg-white/20 border-white/30 text-white hover:bg-white/30" />
+            )}
+          </div>
           <p className="text-white/80 text-lg max-w-2xl mx-auto">
             Scegli l'esperienza perfetta per vivere la passione giallorossa
           </p>
