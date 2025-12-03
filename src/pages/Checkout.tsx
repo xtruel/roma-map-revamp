@@ -11,17 +11,18 @@ import { CreditCard, Lock, CheckCircle2, ArrowLeft, Shield, Ticket } from "lucid
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 
-const defaultPackages: Record<string, { name: string; price: number; description: string }> = {
-  "curva-sud": { name: "Curva Sud", price: 45, description: "L'esperienza più autentica tra i veri tifosi" },
-  "tribuna-monte-mario": { name: "Tribuna Monte Mario", price: 85, description: "Vista panoramica sullo stadio" },
-  "tribuna-tevere": { name: "Tribuna Tevere", price: 75, description: "Ottima visuale a bordo campo" },
-  "vip-box": { name: "VIP Box", price: 250, description: "L'esperienza premium definitiva" },
-  "roma-experience": { name: "Roma Experience", price: 120, description: "Vivi una giornata da vero romanista" },
-  "weekend-giallorosso": { name: "Weekend Giallorosso", price: 350, description: "Un weekend completo nella Capitale" },
-  "trasferta-fans": { name: "Trasferta Fans", price: 199, description: "Segui la Roma in trasferta" },
-  "tour-storico-roma": { name: "Tour Storico Roma", price: 65, description: "Scopri i luoghi che hanno fatto la storia giallorossa" },
-  "roma-gastronomica": { name: "Roma Gastronomica", price: 85, description: "I ristoranti preferiti dai giocatori" },
-  "roma-by-night": { name: "Roma by Night", price: 55, description: "I locali dove festeggiare le vittorie" },
+// Fallback descriptions for package types
+const getPackageDescription = (name: string): string => {
+  const lowerName = name.toLowerCase();
+  if (lowerName.includes("biglietto")) return "Biglietto per la partita";
+  if (lowerName.includes("curva")) return "L'esperienza più autentica tra i veri tifosi";
+  if (lowerName.includes("tribuna")) return "Vista panoramica sullo stadio";
+  if (lowerName.includes("vip")) return "L'esperienza premium definitiva";
+  if (lowerName.includes("trasferta")) return "Segui la Roma in trasferta";
+  if (lowerName.includes("tour")) return "Scopri i luoghi che hanno fatto la storia giallorossa";
+  if (lowerName.includes("experience") || lowerName.includes("esperienza")) return "Vivi una giornata da vero romanista";
+  if (lowerName.includes("weekend")) return "Un weekend completo nella Capitale";
+  return "Pacchetto esclusivo per tifosi romanisti";
 };
 
 const cardSchema = z.object({
@@ -42,17 +43,20 @@ const Checkout = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const packageId = searchParams.get("package") || "curva-sud";
+  
+  // Get package info from URL params
+  const packageName = decodeURIComponent(searchParams.get("package") || "Biglietto Partita");
   const quantity = parseInt(searchParams.get("qty") || "1", 10);
   const priceParam = searchParams.get("price");
+  const price = priceParam ? parseInt(priceParam, 10) : 45;
   
-  const defaultPkg = defaultPackages[packageId] || defaultPackages["curva-sud"];
   const selectedPackage = {
-    id: packageId,
-    name: defaultPkg.name,
-    price: priceParam ? parseInt(priceParam, 10) : defaultPkg.price,
-    description: defaultPkg.description
+    id: packageName.toLowerCase().replace(/\s+/g, "-"),
+    name: packageName,
+    price: price,
+    description: getPackageDescription(packageName)
   };
+  
   const subtotal = selectedPackage.price * quantity;
   const serviceFee = Math.round(subtotal * 0.05);
   const total = subtotal + serviceFee;
