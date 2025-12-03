@@ -1,18 +1,31 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Camera, Mail, Phone, MapPin, LogOut, User, Edit2, Check } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { Camera, Mail, Phone, MapPin, LogOut, User, Edit2, Check, LayoutDashboard, FileText, MapPinIcon, BarChart3, Package, Calendar, UtensilsCrossed, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useUser } from "@/contexts/UserContext";
+import { useAdmin } from "@/contexts/AdminContext";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
+const adminLinks = [
+  { path: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { path: "/admin/articoli", label: "Articoli", icon: FileText },
+  { path: "/admin/pacchetti", label: "Pacchetti", icon: Package },
+  { path: "/admin/partite", label: "Partite", icon: Calendar },
+  { path: "/admin/sponsor", label: "Ristoranti", icon: UtensilsCrossed },
+  { path: "/admin/ordini", label: "Ordini", icon: ShoppingCart },
+  { path: "/admin/mappa", label: "Editor Mappa", icon: MapPinIcon },
+];
+
 const Utente = () => {
   const { isAuthenticated, user, loginWithGoogle, logout, updateProfile } = useUser();
+  const { login: adminLogin, isAuthenticated: isAdminAuthenticated } = useAdmin();
   const navigate = useNavigate();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -24,6 +37,13 @@ const Utente = () => {
     city: "",
   });
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  // Auto-login admin when user logs in (for demo purposes)
+  useEffect(() => {
+    if (isAuthenticated && !isAdminAuthenticated) {
+      adminLogin("admin@ovunqueromanisti.it", "roma1927");
+    }
+  }, [isAuthenticated, isAdminAuthenticated, adminLogin]);
 
   useEffect(() => {
     if (user) {
@@ -254,6 +274,28 @@ const Utente = () => {
                   <div className="text-xs text-muted-foreground">Punti fedeltà</div>
                 </div>
               </div>
+
+              {/* Admin Panel Section */}
+              {isAdminAuthenticated && (
+                <div className="pt-4 border-t border-border">
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <LayoutDashboard className="w-5 h-5 text-primary" />
+                    Pannello Admin (Demo)
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {adminLinks.map((link) => (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        className="flex flex-col items-center gap-1 p-3 rounded-lg bg-muted/50 hover:bg-primary/10 transition-colors text-center"
+                      >
+                        <link.icon className="w-5 h-5 text-primary" />
+                        <span className="text-xs font-medium">{link.label}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Logout button */}
               <Button
