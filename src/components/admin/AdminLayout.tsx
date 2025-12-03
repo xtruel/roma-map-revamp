@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, FileText, MapPin, BarChart3, LogOut, Menu, X, ShoppingCart } from "lucide-react";
+import { LayoutDashboard, FileText, MapPin, BarChart3, LogOut, Menu, X, ShoppingCart, Package, Calendar, UtensilsCrossed } from "lucide-react";
 import { useState } from "react";
 
 interface AdminLayoutProps {
@@ -13,6 +13,9 @@ const navItems = [
   { path: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { path: "/admin/articoli", label: "Articoli", icon: FileText },
+  { path: "/admin/pacchetti", label: "Pacchetti", icon: Package },
+  { path: "/admin/partite", label: "Partite", icon: Calendar },
+  { path: "/admin/sponsor", label: "Ristoranti Sponsor", icon: UtensilsCrossed },
   { path: "/admin/ordini", label: "Ordini", icon: ShoppingCart },
   { path: "/admin/mappa", label: "Editor Mappa", icon: MapPin },
 ];

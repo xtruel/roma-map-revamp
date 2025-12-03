@@ -1,7 +1,9 @@
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { ArrowRight, Clock, User, Search, Filter } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
+import SocialShare from "@/components/SocialShare";
+import { ArrowRight, Clock, User, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -105,6 +107,11 @@ const Articoli = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead 
+        title="Articoli e News Giallorosse"
+        description="Tutte le notizie, le storie e gli approfondimenti dal mondo giallorosso. Leggende, partite, calciomercato e storia della AS Roma."
+        type="website"
+      />
       <Header />
       
       {/* Hero Section */}
@@ -179,15 +186,24 @@ const Articoli = () => {
                       {article.title}
                     </h3>
                     <p className="text-white/80 mb-4 line-clamp-2">{article.excerpt}</p>
-                    <div className="flex items-center gap-4 text-sm text-white/60">
-                      <div className="flex items-center gap-1">
-                        <User className="h-4 w-4" />
-                        {article.author}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 text-sm text-white/60">
+                        <div className="flex items-center gap-1">
+                          <User className="h-4 w-4" />
+                          {article.author}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="h-4 w-4" />
+                          {article.date}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        {article.date}
-                      </div>
+                      <SocialShare 
+                        title={article.title}
+                        description={article.excerpt}
+                        image={article.image}
+                        type="article"
+                        className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                      />
                     </div>
                   </div>
                 </article>
@@ -225,10 +241,19 @@ const Articoli = () => {
                   <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
                     {article.excerpt}
                   </p>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span>{article.author}</span>
-                    <span>•</span>
-                    <span>{article.date}</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <span>{article.author}</span>
+                      <span>•</span>
+                      <span>{article.date}</span>
+                    </div>
+                    <SocialShare 
+                      title={article.title}
+                      description={article.excerpt}
+                      image={article.image}
+                      type="article"
+                      className="h-8 px-2 text-xs"
+                    />
                   </div>
                 </div>
               </article>

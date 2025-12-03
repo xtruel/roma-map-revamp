@@ -22,6 +22,9 @@ import AdminArticles from "./pages/admin/AdminArticles";
 import AdminMapEditor from "./pages/admin/AdminMapEditor";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminOrders from "./pages/admin/AdminOrders";
+import AdminPackages from "./pages/admin/AdminPackages";
+import AdminMatches from "./pages/admin/AdminMatches";
+import AdminSponsors from "./pages/admin/AdminSponsors";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +53,9 @@ const App = () => (
             <Route path="/admin/articoli" element={<AdminArticles />} />
             <Route path="/admin/mappa" element={<AdminMapEditor />} />
             <Route path="/admin/ordini" element={<AdminOrders />} />
+            <Route path="/admin/pacchetti" element={<AdminPackages />} />
+            <Route path="/admin/partite" element={<AdminMatches />} />
+            <Route path="/admin/sponsor" element={<AdminSponsors />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

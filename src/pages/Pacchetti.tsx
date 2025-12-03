@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
+import SocialShare from "@/components/SocialShare";
 import { Check, Star, Ticket, MapPin, Users, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -149,6 +151,11 @@ const tourPackages = [
 const Pacchetti = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead 
+        title="Pacchetti e Biglietti"
+        description="Biglietti partita, pacchetti esperienza, trasferte in bus e tour giallorossi. Vivi la tua passione per la Roma con le nostre offerte esclusive."
+        type="website"
+      />
       <Header />
       
       {/* Hero */}
@@ -215,18 +222,26 @@ const Pacchetti = () => {
                   ))}
                 </ul>
                 
-                <Button
-                  asChild
-                  className={`w-full ${
-                    pkg.popular
-                      ? "bg-roma-gold text-roma-maroon hover:bg-roma-gold-light"
-                      : "bg-gradient-roma text-white hover:opacity-90"
-                  }`}
-                >
-                  <Link to={`/checkout?package=${pkg.name.toLowerCase().replace(/\s+/g, "-")}&qty=1&price=${pkg.price}`}>
-                    Acquista
-                  </Link>
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    asChild
+                    className={`flex-1 ${
+                      pkg.popular
+                        ? "bg-roma-gold text-roma-maroon hover:bg-roma-gold-light"
+                        : "bg-gradient-roma text-white hover:opacity-90"
+                    }`}
+                  >
+                    <Link to={`/checkout?package=${pkg.name.toLowerCase().replace(/\s+/g, "-")}&qty=1&price=${pkg.price}`}>
+                      Acquista
+                    </Link>
+                  </Button>
+                  <SocialShare 
+                    title={`Biglietto ${pkg.name} - €${pkg.price}`}
+                    description={pkg.description}
+                    type="package"
+                    className="h-10"
+                  />
+                </div>
               </div>
             ))}
           </div>
@@ -282,11 +297,19 @@ const Pacchetti = () => {
                       <span className="text-sm text-muted-foreground">A partire da</span>
                       <div className="font-display text-3xl text-primary">€{pkg.price}</div>
                     </div>
-                    <Button asChild className="bg-gradient-roma text-white">
-                      <Link to={`/checkout?package=${pkg.name.toLowerCase().replace(/\s+/g, "-")}&qty=1&price=${pkg.price}`}>
-                        Prenota
-                      </Link>
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button asChild className="bg-gradient-roma text-white">
+                        <Link to={`/checkout?package=${pkg.name.toLowerCase().replace(/\s+/g, "-")}&qty=1&price=${pkg.price}`}>
+                          Prenota
+                        </Link>
+                      </Button>
+                      <SocialShare 
+                        title={`${pkg.name} - €${pkg.price}`}
+                        description={pkg.description}
+                        image={pkg.image}
+                        type="package"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
