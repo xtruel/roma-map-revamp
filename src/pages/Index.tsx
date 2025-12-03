@@ -4,6 +4,7 @@ import Stats from "@/components/Stats";
 import GoogleMapSection from "@/components/GoogleMapSection";
 import Articles from "@/components/Articles";
 import Packages from "@/components/Packages";
+import FeedbackSection from "@/components/FeedbackSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -15,6 +16,18 @@ const Index = () => {
       <GoogleMapSection />
       <Articles />
       <Packages />
+      
+      {/* Feedback Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <FeedbackSection 
+            entityType="site" 
+            entityId="homepage"
+            title="Cosa pensano i tifosi"
+          />
+        </div>
+      </section>
+      
       <Footer />
     </div>
   );

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
 import AdminLayout from "@/components/admin/AdminLayout";
 import RichTextEditor from "@/components/admin/RichTextEditor";
+import ImageUpload from "@/components/ImageUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -147,15 +148,17 @@ const AdminArticles = () => {
                     onChange={(content) => setFormData({ ...formData, content })} 
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>URL Immagine</Label>
-                    <Input value={formData.image} onChange={e => setFormData({ ...formData, image: e.target.value })} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Autore</Label>
-                    <Input value={formData.author} onChange={e => setFormData({ ...formData, author: e.target.value })} />
-                  </div>
+                <div className="space-y-2">
+                  <Label>Immagine</Label>
+                  <ImageUpload
+                    value={formData.image}
+                    onChange={(url) => setFormData({ ...formData, image: url })}
+                    aspectRatio="video"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Autore</Label>
+                  <Input value={formData.author} onChange={e => setFormData({ ...formData, author: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Stato</Label>
